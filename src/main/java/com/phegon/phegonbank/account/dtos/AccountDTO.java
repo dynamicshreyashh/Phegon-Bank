@@ -5,21 +5,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.phegon.phegonbank.auth_users.dtos.UserDTO;
-import com.phegon.phegonbank.auth_users.entity.User;
 import com.phegon.phegonbank.enums.AccountStatus;
 import com.phegon.phegonbank.enums.AccountType;
 import com.phegon.phegonbank.enums.Currency;
 import com.phegon.phegonbank.transaction.dtos.TransactionDTO;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tools.jackson.databind.annotation.JsonAppend;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

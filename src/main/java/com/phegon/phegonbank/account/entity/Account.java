@@ -19,7 +19,7 @@ import java.util.List;
 @Entity
 @Data
 @Builder
-@Table(name="accounts")
+@Table(name = "accounts")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Account {
@@ -38,17 +38,25 @@ public class Account {
     @Column(nullable = false)
     private AccountType accountType;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    // ✅ CORRECT RELATIONSHIP
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Currency currency;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private AccountStatus status;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "account",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     private List<Transaction> transactions = new ArrayList<>();
 
     private LocalDateTime closedAt;
@@ -56,4 +64,3 @@ public class Account {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 }
-
