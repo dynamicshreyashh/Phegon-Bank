@@ -12,6 +12,7 @@ import java.util.UUID;
 public class AwsS3Service {
  private final S3Client s3; private final String bucket;
  public AwsS3Service(String region,String bucket){this.s3=S3Client.builder().region(Region.of(region)).build();this.bucket=bucket;}
+ public boolean isConfigured(){return bucket!=null&&!bucket.isBlank();}
  public String upload(InputStream input,long size,String contentType,String originalName) throws IOException{
   String extension="";
   if(originalName!=null&&originalName.contains("."))extension=originalName.substring(originalName.lastIndexOf('.')).toLowerCase();
