@@ -31,7 +31,7 @@ public class TransactionServiceImpl implements TransactionService {
   if(r.getTransactionType()==TransactionType.WITHDRAWAL){debit(source,r.getAmount());Response<TransactionDTO> result=save(source,r,source.getAccountNumber(),null);notify(source,"Withdrawal successful","A withdrawal of "+r.getAmount()+" "+source.getCurrency()+" was debited from account "+source.getAccountNumber()+".");return result;}
   if(r.getDestinationAccountNumber()==null||r.getDestinationAccountNumber().isBlank())throw new InvalidTransactionException("Destination account is required for transfer");
   if(source.getAccountNumber().equals(r.getDestinationAccountNumber()))throw new InvalidTransactionException("Source and destination accounts must differ");
-  Account dest=accountForUpdate(r.getDestinationAccountNumber());active(dest);debit(source,r.getAmount());
+  Account dest=accountForUpdate(r.getDestinationAccountNumber());active(dest);if(source.getCurrency()!=dest.getCurrency())throw new InvalidTransactionException("Transfers between different currencies are not supported");debit(source,r.getAmount());
   dest.setBalance(dest.getBalance().add(r.getAmount()));accounts.save(dest);
   Response<TransactionDTO> result=save(source,r,source.getAccountNumber(),dest.getAccountNumber());
   Transaction credit=Transaction.builder().amount(r.getAmount()).transactionType(TransactionType.TRANSFER).transactionDate(java.time.LocalDateTime.now())
