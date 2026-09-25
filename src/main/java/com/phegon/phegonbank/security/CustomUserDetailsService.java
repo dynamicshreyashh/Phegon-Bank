@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-
     private final UserRepo userRepo;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByEmail(username)
-                .orElseThrow(() -> new NotFoundException("Email Not Found"));
-
-        return AuthUser.builder().build();
+        User user = userRepo.findByEmail(username.toLowerCase().trim())
+                .orElseThrow(() -> new NotFoundException("Email not found"));
+        if (!user.isActive()) throw new UsernameNotFoundException("User account is inactive");
+        return AuthUser.builder().user(user).build();
     }
 }

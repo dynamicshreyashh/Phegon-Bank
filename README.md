@@ -1,131 +1,135 @@
-# 🏦 Full-Stack FinTech Banking Application  
-**Spring Boot · React · JWT · Docker · CI/CD · AWS**
+# Phegon Bank — Full-Stack FinTech Application
 
-A secure, production-ready **Full-Stack FinTech Banking Application** designed to model real-world banking systems.  
-The application demonstrates enterprise-grade backend development, secure financial transactions, and automated cloud deployment using modern DevOps practices.
+A production-style banking application built with **Spring Boot 4, Spring Security/JWT, MySQL, React, Docker and GitHub Actions**.
 
----
+## Features
 
-## 🚀 Overview
+- JWT authentication and BCrypt password hashing
+- Customer, Auditor and Admin roles
+- Automatic savings-account creation during registration
+- Multiple accounts per user
+- Deposit, withdrawal and atomic transfer APIs
+- Pessimistic locking for concurrent balance updates
+- Paginated transaction history
+- Password reset through SMTP email
+- Transaction/account creation email notifications
+- Profile picture uploads through AWS S3
+- Admin role management
+- Auditor APIs for users, accounts and transactions
+- React dashboard for login, registration, accounts and transactions
+- Docker Compose for MySQL + Spring Boot API + React/Nginx
+- GitHub Actions build/test pipeline
+- Environment-based configuration; no application secrets are committed
 
-This system provides a complete banking workflow with secure authentication, role-based access control, transaction processing, audit logging, and automated deployment.
+## Architecture
 
-It is built with scalability, security, and maintainability in mind—following architectural and operational standards commonly used in financial systems.
+```
+React + Nginx
+     |
+     v
+Spring Boot REST API
+  |       |       |
+ Auth   Accounts  Transactions
+  |       |       |
+ JWT    MySQL    Notifications
+             |
+          AWS S3
+```
 
----
+## Run locally
 
-## ✨ Features
+### 1. Configure environment
 
-### 🔐 Authentication & Authorization
-- JWT-based stateless authentication
-- Role-based access control (Customer, Auditor, Admin)
-- Secure password management
-- Protected REST endpoints using Spring Security
+Copy `.env.example` to `.env` and provide your MySQL credentials and a long random JWT secret.
 
-### 💳 Banking Operations
-- Deposit API
-- Withdrawal API
-- Fund Transfer API
-- Transaction validation and consistency guarantees
+For admin access, optionally configure `ADMIN_EMAIL` and `ADMIN_PASSWORD`. The application creates the admin account on startup when both are present.
 
-### 📊 Auditing & Logging
-- Auditor-specific routes
-- Complete user activity tracking
-- Transaction-level audit logs for compliance and traceability
+SMTP and S3 are optional for basic banking functionality. They become active when their environment variables are configured.
 
-### 📧 Notifications
-- SMTP-based email service
-- Password reset emails
-- Transaction confirmation alerts
-- System notifications
+### 2. Start everything with Docker
 
----
+```bash
+docker compose up --build
+```
 
-## 🖥️ Frontend
-- Single-Page Application built with **React**
-- JWT authentication flow
-- Secure communication with backend APIs
-- Responsive and user-friendly UI
+Frontend: http://localhost:5173  
+Backend: http://localhost:8080
 
----
+### 3. Run backend without Docker
 
-## 🛠️ Backend
-- Java + Spring Boot
-- RESTful API architecture
-- Spring Security with JWT
-- Transaction-safe business logic
-- Clean layered design (Controller, Service, Repository)
+Create the MySQL database and configure the values in `.env`, then:
 
----
+```bash
+./mvnw spring-boot:run
+```
 
-## 🗄️ Database
-- MySQL or PostgreSQL
-- Relational schema design
-- ACID-compliant transactions
-- Data integrity for financial operations
+### 4. Run frontend without Docker
 
----
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## ☁️ DevOps & Cloud
+## Main API endpoints
 
-### 🐳 Containerization
-- Dockerized backend and frontend services
-- Consistent environments across development and deployment
+### Authentication
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `PUT /api/auth/password`
+- `POST /api/auth/forgot-password?email=...`
+- `POST /api/auth/reset-password`
 
-### 🔁 CI/CD Pipeline
-- Automated build, test, and deployment using GitHub Actions
-- Continuous integration and delivery workflow
-- Zero-downtime deployment strategy
+### Accounts
+- `POST /api/accounts`
+- `GET /api/accounts`
+- `GET /api/accounts/{accountNumber}`
+- `PATCH /api/accounts/{accountNumber}/status`
 
-### ☁️ Cloud Integration
-- AWS S3 for file storage and static assets
-- Cloud-ready deployment architecture
+### Transactions
+- `POST /api/transactions`
+- `GET /api/transactions/{accountNumber}?page=0&size=20`
 
----
+Example transaction request:
 
-## 🧰 Technology Stack
+```json
+{
+  "transactionType": "TRANSFER",
+  "amount": 100.00,
+  "accountNumber": "123456789012345",
+  "destinationAccountNumber": "987654321098765",
+  "description": "Rent"
+}
+```
 
-### Backend
-- Java
-- Spring Boot
-- Spring Security
-- JWT
-- REST APIs
+### Users
+- `GET /api/users/me`
+- `GET /api/users?page=0&size=20` — Admin/Auditor
+- `PUT /api/users/password`
+- `POST /api/users/profile-picture`
 
-### Frontend
-- React
-- Axios / Fetch API
+### Roles
+- `GET /api/roles`
+- `POST /api/roles`
+- `PUT /api/roles`
+- `DELETE /api/roles/{id}`
 
-### Database
-- MySQL / PostgreSQL
+### Auditor
+- `GET /api/auditor/users`
+- `GET /api/auditor/accounts`
+- `GET /api/auditor/transactions`
 
-### DevOps & Cloud
-- Docker
-- GitHub Actions
-- AWS S3
+## Security notes
 
-### Other
-- SMTP Email Service
-- Centralized logging & auditing
+- Public registration always creates a `ROLE_CUSTOMER`; clients cannot self-register as Admin or Auditor.
+- Passwords are stored using BCrypt.
+- Banking mutations require an authenticated account owner.
+- Transfers lock both account rows and run inside one database transaction.
+- Cross-currency transfers are rejected rather than silently applying an exchange rate.
+- Closed accounts cannot be reused and can only be closed with a zero balance.
+- Secrets belong in environment variables, never in source control.
 
----
+## Course alignment
 
-## 📌 Key Highlights
-
-- Secure financial transaction handling
-- Enterprise-grade authentication & authorization
-- Full CI/CD automation
-- Cloud-integrated architecture
-- Production-focused system design
-
----
-
-## 👤 Author
-
-**Shreyash Bhosale**  
-Backend Developer | Spring Boot | DevOps | FinTech
-
----
-
-## 📄 License
-This project is intended for professional demonstration and portfolio use.
+The implementation intentionally follows the same broad feature set as the Udemy project—banking APIs, JWT security, SMTP notifications, roles/auditing, S3 storage, React, Docker and CI/CD—but uses an original implementation and some stricter safeguards. The course currently describes these as core parts of its curriculum. 
