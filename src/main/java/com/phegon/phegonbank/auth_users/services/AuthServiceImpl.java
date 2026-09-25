@@ -53,6 +53,8 @@ public class AuthServiceImpl implements AuthService {
                 .accountType(AccountType.SAVINGS).currency(Currency.USD).status(AccountStatus.ACTIVE).user(user).build();
         user.setAccounts(List.of(account));
         userRepo.save(user);
+        notificationService.sendEmail(NotificationDTO.builder().recipient(user.getEmail()).subject("Welcome to Phegon Bank")
+                .body("Welcome "+user.getFirstName()+"! Your savings account "+account.getAccountNumber()+" has been created in "+account.getCurrency()+".").build(),user);
         String token=tokenService.generateToken(user.getEmail());
         return Response.<LoginResponse>builder().statusCode(201).message("Registration successful")
                 .data(LoginResponse.builder().token(token).roles(List.of(customer.getName())).build()).build();
