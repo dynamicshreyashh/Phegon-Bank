@@ -40,3 +40,11 @@ services:
       AWS_SECRET_ACCESS_KEY: $\{AWS_SECRET_ACCESS_KEY:-}
 volumes:
   mysql_data:
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "5173:80"
