@@ -33,5 +33,10 @@ services:
       EXPIRATION_TIME: $\{EXPIRATION_TIME:-3600000}
       MAIL_USER: $\{MAIL_USER:-}
       MAIL_PASS: $\{MAIL_PASS:-}
+      APP_CORS_ORIGINS: $\{APP_CORS_ORIGINS:-http://localhost:5173}
+      AWS_REGION: $\{AWS_REGION:-us-east-1}
+      AWS_S3_BUCKET: $\{AWS_S3_BUCKET:-}
+      AWS_ACCESS_KEY_ID: $\{AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: $\{AWS_SECRET_ACCESS_KEY:-}
 volumes:
   mysql_data:
