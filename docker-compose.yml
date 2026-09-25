@@ -16,6 +16,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+
   api:
     build: .
     restart: unless-stopped
@@ -38,8 +39,8 @@ services:
       AWS_S3_BUCKET: $\{AWS_S3_BUCKET:-}
       AWS_ACCESS_KEY_ID: $\{AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: $\{AWS_SECRET_ACCESS_KEY:-}
-volumes:
-  mysql_data:
+      ADMIN_EMAIL: $\{ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: $\{ADMIN_PASSWORD:-}
 
   frontend:
     build: ./frontend
@@ -48,3 +49,6 @@ volumes:
       - api
     ports:
       - "5173:80"
+
+volumes:
+  mysql_data:
