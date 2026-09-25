@@ -1,6 +1,7 @@
 package com.phegon.phegonbank.auditor.controllers;
 
 import com.phegon.phegonbank.account.entity.Account;
+import com.phegon.phegonbank.account.dtos.AccountDTO;
 import com.phegon.phegonbank.account.repo.AccountRepo;
 import com.phegon.phegonbank.auth_users.dtos.UserDTO;
 import com.phegon.phegonbank.auth_users.repo.UserRepo;
@@ -22,6 +23,6 @@ public class AuditorController {
   var p=transactions.findAll(PageRequest.of(Math.max(0,page),Math.min(Math.max(1,size),100)));
   return Response.<List<TransactionDTO>>builder().statusCode(200).message("Audit transactions fetched").data(p.getContent().stream().map(t->mapper.map(t,TransactionDTO.class)).toList()).meta(java.util.Map.of("totalElements",p.getTotalElements(),"totalPages",p.getTotalPages())).build();
  }
- @GetMapping("/accounts") public Response<List<Account>> accounts(){return Response.<List<Account>>builder().statusCode(200).message("Accounts fetched").data(accounts.findAll()).build();}
+ @GetMapping("/accounts") public Response<List<AccountDTO>> accounts(){return Response.<List<AccountDTO>>builder().statusCode(200).message("Accounts fetched").data(accounts.findAll().stream().map(a->mapper.map(a,AccountDTO.class)).toList()).build();}
  @GetMapping("/users") public Response<List<UserDTO>> users(){return Response.<List<UserDTO>>builder().statusCode(200).message("Users fetched").data(users.findAll().stream().map(u->mapper.map(u,UserDTO.class)).toList()).build();}
 }
