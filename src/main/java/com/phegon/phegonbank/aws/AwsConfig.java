@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 public class AwsConfig {
  @Bean
  public AwsS3Service awsS3Service(@Value("${AWS_REGION:us-east-1}") String region,@Value("${AWS_S3_BUCKET:}") String bucket){
-  if(bucket.isBlank()) return null;
   return new AwsS3Service(region,bucket);
  }
 }
