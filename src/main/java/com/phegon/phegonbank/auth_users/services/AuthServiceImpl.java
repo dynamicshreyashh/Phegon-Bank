@@ -5,6 +5,7 @@ import com.phegon.phegonbank.auth_users.dtos.*;
 import com.phegon.phegonbank.auth_users.entity.PasswordResetCode;
 import com.phegon.phegonbank.auth_users.entity.User;
 import com.phegon.phegonbank.auth_users.repo.*;
+import com.phegon.phegonbank.account.repo.AccountRepo;
 import com.phegon.phegonbank.enums.*;
 import com.phegon.phegonbank.exceptions.*;
 import com.phegon.phegonbank.notification.dtos.NotificationDTO;
@@ -30,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserRepo userRepo;
+    private final AccountRepo accountRepo;
     private final RoleRepo roleRepo;
     private final PasswordResetCodeRepo resetRepo;
     private final PasswordEncoder passwordEncoder;
@@ -112,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
     private String generateAccountNumber(){
         String number;
         do { number=String.valueOf(100000000000000L + random.nextLong(900000000000000L)); }
-        while(userRepo.findAll().stream().flatMap(u->u.getAccounts()==null?java.util.stream.Stream.empty():u.getAccounts().stream()).anyMatch(a->number.equals(a.getAccountNumber())));
+        while(accountRepo.findByAccountNumber(number).isPresent());
         return number;
     }
 }
