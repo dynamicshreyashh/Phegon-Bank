@@ -12,7 +12,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$\{MYSQL_USER} -p$\{MYSQL_PASSWORD} --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} --silent"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -27,20 +27,20 @@ services:
       - "8080:8080"
     environment:
       PORT: 8080
-      LOCAL_DB_URL: jdbc:mysql://db:3306/$\{MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      LOCAL_DB_USERNAME: $\{MYSQL_USER}
-      LOCAL_DB_PASSWORD: $\{MYSQL_PASSWORD}
-      JWT_SECRET: $\{JWT_SECRET:?JWT_SECRET is required}
-      EXPIRATION_TIME: $\{EXPIRATION_TIME:-3600000}
-      MAIL_USER: $\{MAIL_USER:-}
-      MAIL_PASS: $\{MAIL_PASS:-}
-      APP_CORS_ORIGINS: $\{APP_CORS_ORIGINS:-http://localhost:5173}
-      AWS_REGION: $\{AWS_REGION:-us-east-1}
-      AWS_S3_BUCKET: $\{AWS_S3_BUCKET:-}
-      AWS_ACCESS_KEY_ID: $\{AWS_ACCESS_KEY_ID:-}
-      AWS_SECRET_ACCESS_KEY: $\{AWS_SECRET_ACCESS_KEY:-}
-      ADMIN_EMAIL: $\{ADMIN_EMAIL:-}
-      ADMIN_PASSWORD: $\{ADMIN_PASSWORD:-}
+      LOCAL_DB_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      LOCAL_DB_USERNAME: ${MYSQL_USER}
+      LOCAL_DB_PASSWORD: ${MYSQL_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      EXPIRATION_TIME: ${EXPIRATION_TIME:-3600000}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASS: ${MAIL_PASS:-}
+      APP_CORS_ORIGINS: ${APP_CORS_ORIGINS:-http://localhost:5173}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
 
   frontend:
     build: ./frontend
